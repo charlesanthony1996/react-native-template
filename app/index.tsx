@@ -1,34 +1,68 @@
-import React, { useState} from "react"
-import { Switch, StyleSheet } from "react-native"
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context"
-
-
+import React from "react"
+import { StyleSheet, Text, View, SectionList, StatusBar} from "react-native"
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
 
 function App() {
-  const [isEnabled, setIsEnabled] = useState(false)
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState )
+
+  const data = [
+    {
+      title: 'main dishes',
+      data: ['pizza', 'burger', 'risotto']
+    },
+    {
+      title: 'sides',
+      data: ['fresh fries', 'onion rings', 'fried shrimps']
+    },
+    {
+      title: 'drinks',
+      data: ['water', 'coke', 'beer']
+    },
+    {
+      title: 'desserts',
+      data: ['cheese cake', 'ice cream']
+    }
+  ]
+
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <Switch
-        ios_backgroundColor={'none'}
-        onValueChange={toggleSwitch}
-        value={isEnabled}
+        <SectionList
+        sections={data}
+        keyExtractor={(item, index) => item + index}
+        renderItem={({item}) => (
+          <View style={styles.item}>
+            <Text style={styles.title}>Item</Text>
+          </View>
+        )}
+        renderSectionHeader={({section: {title}}) => (
+          <Text style={styles.header}>{title}</Text>
+        )}
+        
         >
-        </Switch>
-
+        </SectionList>
       </SafeAreaView>
     </SafeAreaProvider>
   )
-
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
+    paddingTop: StatusBar.currentHeight,
+    marginHorizontal: 16
+  },
+  item: {
+    backgroundColor: 'green',
+    padding: 20,
+    marginVertical: 8
+  },
+  header: {
+    fontSize: 32,
+    backgroundColor: '#fff'
+  },
+  title: {
+    fontSize: 24,
   }
 })
 
