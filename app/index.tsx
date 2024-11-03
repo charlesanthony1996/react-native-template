@@ -1,69 +1,76 @@
-import React from "react"
-import { StyleSheet, Text, View, SectionList, StatusBar} from "react-native"
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
+import { NavigationContainer } from "@react-navigation/native"
+import React, { useRef, useState } from "react"
+import { Button, DrawerLayoutAndroid, Text, StyleSheet, View } from "react-native"
 
-function App() {
 
-  const data = [
-    {
-      title: 'main dishes',
-      data: ['pizza', 'burger', 'risotto']
-    },
-    {
-      title: 'sides',
-      data: ['fresh fries', 'onion rings', 'fried shrimps']
-    },
-    {
-      title: 'drinks',
-      data: ['water', 'coke', 'beer']
-    },
-    {
-      title: 'desserts',
-      data: ['cheese cake', 'ice cream']
+const App = () => {
+    const drawer = useRef<DrawerLayoutAndroid>(null)
+    const [drawerPosition, setDrawerPosition ] = useState<'left' | 'right'>('left')
+
+
+    const changeDrawerPosition = () => {
+        if (drawerPosition === 'left') {
+            setDrawerPosition('right')
+        } else {
+            setDrawerPosition('left')
+        }
     }
-  ]
 
+    const navigationView = () => (
+        <View style={[styles.container, styles.navigationContainer]}>
+            <Text style={styles.paragraph}>
+                Im in the drawer
+            </Text>
+            <Button
+            title="Close drawer"
+            onPress={() => drawer.current?.closeDrawer()}
+            >
+            </Button>
+        </View>
+    )
 
-  return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <SectionList
-        sections={data}
-        keyExtractor={(item, index) => item + index}
-        renderItem={({item}) => (
-          <View style={styles.item}>
-            <Text style={styles.title}>Item</Text>
-          </View>
-        )}
-        renderSectionHeader={({section: {title}}) => (
-          <Text style={styles.header}>{title}</Text>
-        )}
-        
+    return (
+        <DrawerLayoutAndroid
+        ref={drawer}
+        drawerWidth={300}
+        drawerPosition={drawerPosition}
+        renderNavigationView={navigationView}
         >
-        </SectionList>
-      </SafeAreaView>
-    </SafeAreaProvider>
-  )
+            <View style={styles.container}>
+                <Text style={styles.paragraph}>
+                    Drawer on the {drawerPosition}!
+                </Text>
+                <Button
+                title="Change drawer position"
+                onPress= {() => changeDrawerPosition()}
+                >
+                </Button>
+                <Text style={styles.paragraph}>
+                    Swipe from the side or press button below to see it!
+                </Text>
+                <Button title="Open Drawer" onPress={() => drawer?.current?.openDrawer}>
+                </Button>
+            </View>
+        </DrawerLayoutAndroid>
+    )
 }
 
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: StatusBar.currentHeight,
-    marginHorizontal: 16
-  },
-  item: {
-    backgroundColor: 'green',
-    padding: 20,
-    marginVertical: 8
-  },
-  header: {
-    fontSize: 32,
-    backgroundColor: '#fff'
-  },
-  title: {
-    fontSize: 24,
-  }
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 16
+    },
+    navigationContainer: {
+        backgroundColor: '#ecf0f1'
+    },
+    paragraph: {
+        padding: 16,
+        fontSize: 15,
+        textAlign: 'center'
+    }
 })
 
 export default App
